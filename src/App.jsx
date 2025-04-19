@@ -58,7 +58,7 @@ function App() {
 
       {/* Cloud function demo section */}
       <div className="mt-8 border-t pt-4">
-        <h2 className="text-lg font-semibold mb-2">Netlify Cloud Function Demo</h2>
+        <h2 className="text-lg font-semibold mb-2">Vercel Cloud Function Demo</h2>
         <p className="text-sm text-gray-600">Message from cloud: {msg}</p>
       </div>
     </div>
