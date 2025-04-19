@@ -15,11 +15,12 @@ function App() {
       .then((data) => setMsg(data.message));
   }, []);
 
-  const addTimer = (seconds) => {
+  const addTimer = (seconds, name) => {
     const newTimer = {
       id: Date.now(),
       totalSeconds: seconds,
       isRunning: false,
+      name: name || "Unnamed Timer"
     };
     setTimers([...timers, newTimer]);
   };
@@ -48,6 +49,7 @@ function App() {
         <Timer
           key={timer.id}
           id={timer.id}
+          name={timer.name}
           totalSeconds={timer.totalSeconds}
           isRunning={timer.isRunning}
           deleteTimer={deleteTimer}
@@ -66,6 +68,7 @@ function App() {
 }
 
 export default App;
+
 
 
 
