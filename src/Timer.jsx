@@ -7,7 +7,7 @@ const formatTime = (totalSeconds) => {
   return `${hrs}:${mins}:${secs}`;
 };
 
-function Timer({ id, totalSeconds, isRunning, deleteTimer, toggleTimer, updateSeconds }) {
+function Timer({ id, name, totalSeconds, isRunning, deleteTimer, toggleTimer, updateSeconds }) {
   const [timeLeft, setTimeLeft] = useState(totalSeconds);
 
   useEffect(() => {
@@ -29,19 +29,26 @@ function Timer({ id, totalSeconds, isRunning, deleteTimer, toggleTimer, updateSe
   }, [isRunning, timeLeft]);
 
   return (
-    <div className="timer-container">
-      <p className="timer-display">{formatTime(timeLeft)}</p>
-      <div className="timer-controls">
+    <div className="timer-container mb-4 p-3 border rounded">
+      <h3 className="font-semibold mb-1">{name}</h3>
+      <p className="timer-display text-lg mb-2">{formatTime(timeLeft)}</p>
+      <div className="timer-controls flex gap-2">
         <button
           onClick={() => toggleTimer(id)}
-          className={`timer-toggle-btn ${isRunning ? 'pause' : 'start'}`}
+          className={`timer-toggle-btn px-3 py-1 rounded text-white ${isRunning ? 'bg-yellow-500' : 'bg-green-500'}`}
         >
           {isRunning ? 'Pause' : 'Start'}
         </button>
-        <button className="timer-delete-btn" onClick={() => deleteTimer(id)}>🗑️</button>
+        <button
+          onClick={() => deleteTimer(id)}
+          className="timer-delete-btn px-3 py-1 bg-red-500 text-white rounded"
+        >
+          🗑️
+        </button>
       </div>
     </div>
   );
 }
 
 export default Timer;
+
