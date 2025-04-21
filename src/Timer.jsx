@@ -9,36 +9,36 @@ const formatTime = (totalSeconds) => {
 
 function Timer({ id, name, totalSeconds, isRunning, deleteTimer, toggleTimer, updateSeconds }) {
   const [timeLeft, setTimeLeft] = useState(totalSeconds);
-  const [secondsPassed, setSecondsPassed] = useState(0);
+  const [startTime, setStartTime] = useState(null);
   const [hasSaved, setHasSaved] = useState(false);
 
   useEffect(() => {
     setTimeLeft(totalSeconds);
-    setSecondsPassed(0);
+    setStartTime(null);
+    setHasSaved(false);
   }, [totalSeconds]);
 
   useEffect(() => {
     let interval = null;
+
     if (isRunning && timeLeft > 0) {
+      if (!startTime) setStartTime(new Date());
+
       interval = setInterval(() => {
         setTimeLeft(prev => {
           const newTime = prev - 1;
           updateSeconds(id, newTime);
-          setSecondsPassed(prevPassed => prevPassed + 1);
           return newTime;
         });
       }, 1000);
     }
+
     return () => clearInterval(interval);
   }, [isRunning, timeLeft]);
 
   useEffect(() => {
-    if (timeLeft === 0 && isRunning && !hasSaved) {
+    if (timeLeft === 0 && isRunning && !hasSaved && startTime) {
       const endTime = new Date();
-      const startTime = new Date(endTime.getTime() - secondsPassed * 1000);
-
-      console.log("🎯 Timer finished, saving session...");
-      console.log("⏱️ Seconds passed:", secondsPassed);
 
       fetch('/api/saveSession', {
         method: 'POST',
@@ -49,7 +49,7 @@ function Timer({ id, name, totalSeconds, isRunning, deleteTimer, toggleTimer, up
           name,
           startTime,
           endTime,
-          duration: totalSeconds  // original input duration saved here
+          duration: totalSeconds
         })
       })
         .then(res => res.json())
@@ -61,7 +61,7 @@ function Timer({ id, name, totalSeconds, isRunning, deleteTimer, toggleTimer, up
           console.error('❌ Failed to save session:', err);
         });
     }
-  }, [timeLeft, isRunning, secondsPassed, name, hasSaved, totalSeconds]);
+  }, [timeLeft, isRunning, hasSaved, startTime, name, totalSeconds]);
 
   return (
     <div className="timer-container mb-4 p-3 border rounded">
@@ -86,4 +86,5 @@ function Timer({ id, name, totalSeconds, isRunning, deleteTimer, toggleTimer, up
 }
 
 export default Timer;
+
 
