@@ -16,7 +16,7 @@ export default async function handler(req, res) {
       cachedClient = await MongoClient.connect(uri);
     }
 
-    const db = cachedClient.db('react-timer');
+    const db = cachedClient.db('timerDB');
     const sessions = db.collection('sessions');
 
     await sessions.insertOne({
