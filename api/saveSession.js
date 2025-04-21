@@ -1,4 +1,3 @@
-// /api/saveSession.js
 import { MongoClient } from 'mongodb';
 
 const uri = process.env.MONGODB_URI;
@@ -13,17 +12,17 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { startTime, endTime, name } = req.body;
-
-    const start = new Date(startTime);
-    const end = new Date(endTime);
-    const durationInSeconds = Math.floor((end - start) / 1000);
+    const { startTime, endTime, duration, name } = req.body;
 
     console.log("📦 Request body received:");
     console.log("   🧑 Task name      :", name);
-    console.log("   ⏱️ Start time     :", start.toISOString());
-    console.log("   ⏲️ End time       :", end.toISOString());
-    console.log("   ⌛ Duration (sec) :", durationInSeconds);
+    console.log("   ⏱️ Start time     :", startTime);
+    console.log("   ⏲️ End time       :", endTime);
+    console.log("   ⌛ Duration (sent):", duration);
+
+    const durationInSeconds = Math.floor(Number(duration));
+    const start = new Date(startTime);
+    const end = new Date(endTime);
 
     if (!cachedClient) {
       console.log("🔌 Connecting to MongoDB...");
@@ -39,8 +38,8 @@ export default async function handler(req, res) {
     console.log("📤 Sending data to MongoDB...");
     const result = await sessions.insertOne({
       name,
-      startTime,
-      endTime,
+      startTime: start,
+      endTime: end,
       durationInSeconds,
       createdAt: new Date()
     });
@@ -49,12 +48,11 @@ export default async function handler(req, res) {
     console.log("🆔 Inserted Document ID:", result.insertedId);
 
     const completedAt = new Date().toLocaleString();
-    console.log("✅ Task completed!");
-    console.log(`📝 Summary:
+    console.log(`✅ Task completed:
     - Task: ${name}
     - Duration: ${durationInSeconds} seconds
     - Completed At: ${completedAt}
-    - Stored in MongoDB
+    - Stored in MongoDB ✅
     `);
 
     res.status(200).json({ message: 'Session saved!' });
@@ -63,6 +61,7 @@ export default async function handler(req, res) {
     res.status(500).json({ message: 'Something went wrong' });
   }
 }
+
 
 
 
