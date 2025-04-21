@@ -4,21 +4,6 @@ import { MongoClient } from 'mongodb';
 const uri = process.env.MONGODB_URI;
 let cachedClient = null;
 
-// Safely convert duration string (or number) to seconds
-function convertToSeconds(durationStr) {
-  const str = String(durationStr).toLowerCase(); // force it to be string
-  const regex = /(?:(\d+)\s*hours?)?\s*(?:(\d+)\s*minutes?)?\s*(?:(\d+)\s*seconds?)?/;
-  const match = str.match(regex);
-
-  if (!match) return 0;
-
-  const hours = parseInt(match[1]) || 0;
-  const minutes = parseInt(match[2]) || 0;
-  const seconds = parseInt(match[3]) || 0;
-
-  return hours * 3600 + minutes * 60 + seconds;
-}
-
 export default async function handler(req, res) {
   console.log("🟢 API hit: /api/saveSession");
 
@@ -28,16 +13,17 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { startTime, endTime, duration, name } = req.body;
+    const { startTime, endTime, name } = req.body;
 
-    const durationInSeconds = convertToSeconds(duration);
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+    const durationInSeconds = Math.floor((end - start) / 1000);
 
     console.log("📦 Request body received:");
     console.log("   🧑 Task name      :", name);
-    console.log("   ⏱️ Start time     :", startTime);
-    console.log("   ⏲️ End time       :", endTime);
-    console.log("   ⌛ Duration        :", duration);
-    console.log("   ⏳ Duration (sec) :", durationInSeconds);
+    console.log("   ⏱️ Start time     :", start.toISOString());
+    console.log("   ⏲️ End time       :", end.toISOString());
+    console.log("   ⌛ Duration (sec) :", durationInSeconds);
 
     if (!cachedClient) {
       console.log("🔌 Connecting to MongoDB...");
@@ -55,7 +41,6 @@ export default async function handler(req, res) {
       name,
       startTime,
       endTime,
-      duration,
       durationInSeconds,
       createdAt: new Date()
     });
@@ -67,7 +52,7 @@ export default async function handler(req, res) {
     console.log("✅ Task completed!");
     console.log(`📝 Summary:
     - Task: ${name}
-    - Duration: ${duration} (${durationInSeconds} seconds)
+    - Duration: ${durationInSeconds} seconds
     - Completed At: ${completedAt}
     - Stored in MongoDB
     `);
@@ -78,5 +63,6 @@ export default async function handler(req, res) {
     res.status(500).json({ message: 'Something went wrong' });
   }
 }
+
 
 
