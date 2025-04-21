@@ -1,73 +1,63 @@
-import React, { useEffect, useState } from "react";
-import Timer from './Timer';
-import TimerForm from './TimerForm';
-import './index.css';
-import './App.css'; // Assuming this is for Netlify demo styles
+import React, { useState } from "react";
+import Timer from "./Timer";
+import "./index.css";
 
-function App() {
+const App = () => {
   const [timers, setTimers] = useState([]);
-  const [msg, setMsg] = useState("Loading..."); // 👈 Cloud function message
+  const [name, setName] = useState("");
+  const [seconds, setSeconds] = useState("");
 
-  // Cloud function fetch
-  useEffect(() => {
-    fetch("/.netlify/functions/hello")
-      .then((res) => res.json())
-      .then((data) => setMsg(data.message));
-  }, []);
-
-  const addTimer = (seconds, name) => {
-    const newTimer = {
-      id: Date.now(),
-      totalSeconds: seconds,
-      isRunning: false,
-      name: name || "Unnamed Timer"
-    };
-    setTimers([...timers, newTimer]);
+  const addTimer = () => {
+    if (name && seconds) {
+      setTimers([...timers, { id: Date.now(), name, seconds: parseInt(seconds) }]);
+      setName("");
+      setSeconds("");
+    }
   };
 
   const deleteTimer = (id) => {
-    setTimers(timers.filter(timer => timer.id !== id));
-  };
-
-  const toggleTimer = (id) => {
-    setTimers(timers.map(timer =>
-      timer.id === id ? { ...timer, isRunning: !timer.isRunning } : timer
-    ));
-  };
-
-  const updateSeconds = (id, newSeconds) => {
-    setTimers(timers.map(timer =>
-      timer.id === id ? { ...timer, totalSeconds: newSeconds } : timer
-    ));
+    setTimers(timers.filter((t) => t.id !== id));
   };
 
   return (
-    <div className="p-4 max-w-md mx-auto">
-      <h1 className="text-xl font-bold mb-4">Countdown Timers</h1>
-      <TimerForm addTimer={addTimer} />
-      {timers.map(timer => (
+    <div>
+      <h1>Countdown Timers</h1>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          addTimer();
+        }}
+      >
+        <input
+          type="text"
+          placeholder="Timer name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <input
+          type="number"
+          placeholder="Seconds"
+          value={seconds}
+          onChange={(e) => setSeconds(e.target.value)}
+        />
+        <button type="submit">Add</button>
+      </form>
+
+      {timers.map((timer) => (
         <Timer
           key={timer.id}
           id={timer.id}
           name={timer.name}
-          totalSeconds={timer.totalSeconds}
-          isRunning={timer.isRunning}
-          deleteTimer={deleteTimer}
-          toggleTimer={toggleTimer} // ⚠️ Class names preserved, just renamed this prop
-          updateSeconds={updateSeconds}
+          initialSeconds={timer.seconds}
+          onDelete={deleteTimer}
         />
       ))}
-
-      {/* Cloud function demo section */}
-      <div className="mt-8 border-t pt-4">
-        <h2 className="text-lg font-semibold mb-2">Vercel Cloud Function Demo</h2>
-        <p className="text-sm text-gray-600">Message from cloud: {msg}</p>
-      </div>
     </div>
   );
-}
+};
 
 export default App;
+
 
 
 
