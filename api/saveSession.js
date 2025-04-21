@@ -4,10 +4,11 @@ import { MongoClient } from 'mongodb';
 const uri = process.env.MONGODB_URI;
 let cachedClient = null;
 
-// Helper function to convert duration string to seconds
+// Safely convert duration string (or number) to seconds
 function convertToSeconds(durationStr) {
-  const regex = /(?:(\d+)\s*hours?)?\s*(?:(\d+)\s*minutes?)?\s*(?:(\d+)\s*seconds?)?/i;
-  const match = durationStr.match(regex);
+  const str = String(durationStr).toLowerCase(); // force it to be string
+  const regex = /(?:(\d+)\s*hours?)?\s*(?:(\d+)\s*minutes?)?\s*(?:(\d+)\s*seconds?)?/;
+  const match = str.match(regex);
 
   if (!match) return 0;
 
