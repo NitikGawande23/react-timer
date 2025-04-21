@@ -9,6 +9,7 @@ const formatTime = (totalSeconds) => {
 
 function Timer({ id, name, totalSeconds, isRunning, deleteTimer, toggleTimer, updateSeconds }) {
   const [timeLeft, setTimeLeft] = useState(totalSeconds);
+  const [hasSaved, setHasSaved] = useState(false); // Prevent duplicate saves
 
   useEffect(() => {
     setTimeLeft(totalSeconds);
@@ -29,7 +30,7 @@ function Timer({ id, name, totalSeconds, isRunning, deleteTimer, toggleTimer, up
   }, [isRunning, timeLeft]);
 
   useEffect(() => {
-    if (timeLeft === 0 && isRunning) {
+    if (timeLeft === 0 && isRunning && !hasSaved) {
       const endTime = new Date();
       const startTime = new Date(endTime.getTime() - totalSeconds * 1000);
 
@@ -48,12 +49,13 @@ function Timer({ id, name, totalSeconds, isRunning, deleteTimer, toggleTimer, up
         .then(res => res.json())
         .then(data => {
           console.log('Session saved:', data);
+          setHasSaved(true);
         })
         .catch(err => {
           console.error('Failed to save session:', err);
         });
     }
-  }, [timeLeft]);
+  }, [timeLeft, isRunning, totalSeconds, name, hasSaved]);
 
   return (
     <div className="timer-container mb-4 p-3 border rounded">
@@ -78,5 +80,6 @@ function Timer({ id, name, totalSeconds, isRunning, deleteTimer, toggleTimer, up
 }
 
 export default Timer;
+
 
 
