@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     console.log("   🧑 Task name      :", name);
     console.log("   ⏱️ Start time     :", startTime);
     console.log("   ⏲️ End time       :", endTime);
-    console.log("   ⌛ Duration (sent):", duration);
+    console.log("   ⌛ Duration (input):", duration);
 
     const durationInSeconds = Math.floor(Number(duration));
     const start = new Date(startTime);
@@ -61,7 +61,3 @@ export default async function handler(req, res) {
     res.status(500).json({ message: 'Something went wrong' });
   }
 }
-
-
-
-
