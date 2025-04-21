@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Timer from './Timer';
-import TimerForm from './TimerForm';
-import './index.css';
-import './App.css'; // Optional styling
+import Timer from "./Timer";
+import TimerForm from "./TimerForm";
+import "./App.css";
 
 function App() {
   const [timers, setTimers] = useState([]);
@@ -41,8 +40,8 @@ function App() {
   };
 
   return (
-    <div className="p-4 max-w-md mx-auto">
-      <h1 className="text-xl font-bold mb-4">Countdown Timers</h1>
+    <div className="app-container">
+      <h1 className="main-heading">Countdown Timers</h1>
       <TimerForm addTimer={addTimer} />
       {timers.map(timer => (
         <Timer
@@ -52,18 +51,17 @@ function App() {
           totalSeconds={timer.totalSeconds}
           isRunning={timer.isRunning}
           deleteTimer={deleteTimer}
-          externalToggleTimer={toggleTimer} // <-- must match Timer.jsx
+          externalToggleTimer={toggleTimer}
           updateSeconds={updateSeconds}
         />
       ))}
-
-      {/* Cloud function demo section */}
-      <div className="mt-8 border-t pt-4">
-        <h2 className="text-lg font-semibold mb-2">Vercel Cloud Function Demo</h2>
-        <p className="text-sm text-gray-600">Message from cloud: {msg}</p>
+      <div className="cloud-msg">
+        <h2>Vercel Cloud Function Demo</h2>
+        <p>Message from cloud: {msg}</p>
       </div>
     </div>
   );
 }
 
 export default App;
+
