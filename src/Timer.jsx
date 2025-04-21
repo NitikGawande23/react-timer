@@ -11,11 +11,13 @@ function Timer({ id, name, totalSeconds, isRunning, deleteTimer, toggleTimer, up
   const [timeLeft, setTimeLeft] = useState(totalSeconds);
   const [startTime, setStartTime] = useState(null);
   const [hasSaved, setHasSaved] = useState(false);
+  const [originalDuration, setOriginalDuration] = useState(totalSeconds);
 
   useEffect(() => {
     setTimeLeft(totalSeconds);
     setStartTime(null);
     setHasSaved(false);
+    setOriginalDuration(totalSeconds);
   }, [totalSeconds]);
 
   useEffect(() => {
@@ -49,7 +51,7 @@ function Timer({ id, name, totalSeconds, isRunning, deleteTimer, toggleTimer, up
           name,
           startTime,
           endTime,
-          duration: totalSeconds
+          duration: originalDuration
         })
       })
         .then(res => res.json())
@@ -61,7 +63,7 @@ function Timer({ id, name, totalSeconds, isRunning, deleteTimer, toggleTimer, up
           console.error('❌ Failed to save session:', err);
         });
     }
-  }, [timeLeft, isRunning, hasSaved, startTime, name, totalSeconds]);
+  }, [timeLeft, isRunning, hasSaved, startTime, name, originalDuration]);
 
   return (
     <div className="timer-container mb-4 p-3 border rounded">
