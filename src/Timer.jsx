@@ -16,7 +16,7 @@ function Timer({ timer, onRemove }) {
     } else if (isRunning && remaining === 0) {
       clearInterval(interval);
       setIsRunning(false);
-      saveSession();
+      saveSession(); // Save log when timer completes
     }
 
     return () => clearInterval(interval);
@@ -44,7 +44,7 @@ function Timer({ timer, onRemove }) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          taskName: timer.taskName,
+          taskName: timer.name,
           start: startTime,
           end: new Date().toISOString(),
         }),
@@ -59,7 +59,7 @@ function Timer({ timer, onRemove }) {
 
   return (
     <div className="bg-white border border-rose-400 shadow-md rounded-xl p-6 w-80 flex flex-col gap-4 relative">
-      <div className="text-lg font-bold text-neutral-800">{timer.taskName}</div>
+      <div className="text-lg font-bold text-neutral-800">{timer.name}</div>
       <div className="text-3xl font-extrabold text-[#3c0000] text-center">
         {formatTime(remaining)}
       </div>
@@ -80,5 +80,6 @@ function Timer({ timer, onRemove }) {
 }
 
 export default Timer;
+
 
 
