@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Timer from './Timer';
 import TimerForm from './TimerForm';
 import './index.css';
-import './App.css'; // Optional styling
+import './App.css';
 
 function App() {
   const [timers, setTimers] = useState([]);
@@ -29,9 +29,13 @@ function App() {
   };
 
   const toggleTimer = (id) => {
-    setTimers(timers.map(timer =>
-      timer.id === id ? { ...timer, isRunning: !timer.isRunning } : timer
-    ));
+    setTimers(prev =>
+      prev.map(timer =>
+        timer.id === id
+          ? { ...timer, isRunning: !timer.isRunning }
+          : timer
+      )
+    );
   };
 
   const updateSeconds = (id, newSeconds) => {
@@ -41,32 +45,34 @@ function App() {
   };
 
   return (
-    <div className="p-4 max-w-md mx-auto">
-      <h1 className="text-xl font-bold mb-4">Countdown Timers</h1>
+    <div className="App">
+      <h1>Countdown Timers</h1>
       <TimerForm addTimer={addTimer} />
-      {timers.map(timer => (
-        <Timer
-          key={timer.id}
-          id={timer.id}
-          name={timer.name}
-          totalSeconds={timer.totalSeconds}
-          isRunning={timer.isRunning}
-          deleteTimer={deleteTimer}
-          externalToggleTimer={toggleTimer} // <-- must match Timer.jsx
-          updateSeconds={updateSeconds}
-        />
-      ))}
+      <div className="timer-list">
+        {timers.map(timer => (
+          <Timer
+            key={timer.id}
+            id={timer.id}
+            name={timer.name}
+            totalSeconds={timer.totalSeconds}
+            isRunning={timer.isRunning}
+            deleteTimer={deleteTimer}
+            externalToggleTimer={toggleTimer}
+            updateSeconds={updateSeconds}
+          />
+        ))}
+      </div>
 
-      {/* Cloud function demo section */}
-      <div className="mt-8 border-t pt-4">
-        <h2 className="text-lg font-semibold mb-2">Vercel Cloud Function Demo</h2>
-        <p className="text-sm text-gray-600">Message from cloud: {msg}</p>
+      <div className="cloud-msg">
+        <h2>Vercel Cloud Function Demo</h2>
+        <p>Message from cloud: {msg}</p>
       </div>
     </div>
   );
 }
 
 export default App;
+
 
 
 
