@@ -4,16 +4,16 @@ import './App.css';
 
 function App() {
   const [timers, setTimers] = useState([]);
-  const [taskName, setTaskName] = useState('');
+  const [name, setName] = useState('');
   const [seconds, setSeconds] = useState('');
 
   const addTimer = () => {
-    if (taskName && seconds) {
+    if (name && seconds) {
       setTimers([
         ...timers,
-        { id: Date.now(), taskName, seconds: parseInt(seconds), startTime: null },
+        { id: Date.now(), name, seconds: parseInt(seconds), startTime: null },
       ]);
-      setTaskName('');
+      setName('');
       setSeconds('');
     }
   };
@@ -30,8 +30,8 @@ function App() {
           type="text"
           placeholder="Timer name"
           className="border-2 rounded-md px-4 py-2 focus:outline-none"
-          value={taskName}
-          onChange={(e) => setTaskName(e.target.value)}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
         />
         <input
           type="number"
