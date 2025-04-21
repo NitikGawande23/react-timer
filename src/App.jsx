@@ -2,13 +2,12 @@ import React, { useEffect, useState } from "react";
 import Timer from './Timer';
 import TimerForm from './TimerForm';
 import './index.css';
-import './App.css'; // Assuming this is for Netlify demo styles
+import './App.css'; // Optional styling
 
 function App() {
   const [timers, setTimers] = useState([]);
-  const [msg, setMsg] = useState("Loading..."); // 👈 Cloud function message
+  const [msg, setMsg] = useState("Loading...");
 
-  // Cloud function fetch
   useEffect(() => {
     fetch("/.netlify/functions/hello")
       .then((res) => res.json())
@@ -53,7 +52,7 @@ function App() {
           totalSeconds={timer.totalSeconds}
           isRunning={timer.isRunning}
           deleteTimer={deleteTimer}
-          toggleTimer={toggleTimer}
+          externalToggleTimer={toggleTimer} // <-- must match Timer.jsx
           updateSeconds={updateSeconds}
         />
       ))}
@@ -68,6 +67,7 @@ function App() {
 }
 
 export default App;
+
 
 
 
