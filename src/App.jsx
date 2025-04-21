@@ -1,67 +1,67 @@
-import { useState } from 'react';
-import Timer from './Timer';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import Timer from "./Timer";
+import TimerForm from "./TimerForm";
+import "./App.css";
 
 function App() {
   const [timers, setTimers] = useState([]);
-  const [taskName, setTaskName] = useState('');
-  const [seconds, setSeconds] = useState('');
+  const [msg, setMsg] = useState("Loading...");
 
-  const addTimer = () => {
-    if (taskName && seconds) {
-      setTimers([
-        ...timers,
-        { id: Date.now(), taskName, seconds: parseInt(seconds), startTime: null },
-      ]);
-      setTaskName('');
-      setSeconds('');
-    }
+  useEffect(() => {
+    fetch("/.netlify/functions/hello")
+      .then((res) => res.json())
+      .then((data) => setMsg(data.message));
+  }, []);
+
+  const addTimer = (seconds, name) => {
+    const newTimer = {
+      id: Date.now(),
+      totalSeconds: seconds,
+      isRunning: false,
+      name: name || "Unnamed Timer"
+    };
+    setTimers([...timers, newTimer]);
   };
 
-  const removeTimer = (id) => {
-    setTimers(timers.filter((timer) => timer.id !== id));
+  const deleteTimer = (id) => {
+    setTimers(timers.filter(timer => timer.id !== id));
+  };
+
+  const toggleTimer = (id) => {
+    setTimers(timers.map(timer =>
+      timer.id === id ? { ...timer, isRunning: !timer.isRunning } : timer
+    ));
+  };
+
+  const updateSeconds = (id, newSeconds) => {
+    setTimers(timers.map(timer =>
+      timer.id === id ? { ...timer, totalSeconds: newSeconds } : timer
+    ));
   };
 
   return (
-    <div className="min-h-screen bg-[#ede9dd] p-4 flex flex-col items-center">
-      <h1 className="text-4xl font-bold text-rose-700 mb-6">Countdown Timers</h1>
-      <div className="flex gap-2 mb-8">
-        <input
-          type="text"
-          placeholder="Timer name"
-          className="border-2 rounded-md px-4 py-2 focus:outline-none"
-          value={taskName}
-          onChange={(e) => setTaskName(e.target.value)}
+    <div className="app-container">
+      <h1 className="main-heading">Countdown Timers</h1>
+      <TimerForm addTimer={addTimer} />
+      {timers.map(timer => (
+        <Timer
+          key={timer.id}
+          id={timer.id}
+          name={timer.name}
+          totalSeconds={timer.totalSeconds}
+          isRunning={timer.isRunning}
+          deleteTimer={deleteTimer}
+          externalToggleTimer={toggleTimer}
+          updateSeconds={updateSeconds}
         />
-        <input
-          type="number"
-          placeholder="Seconds"
-          className="border-2 rounded-md px-4 py-2 focus:outline-none"
-          value={seconds}
-          onChange={(e) => setSeconds(e.target.value)}
-        />
-        <button
-          className="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-md"
-          onClick={addTimer}
-        >
-          Add
-        </button>
-      </div>
-
-      <div className="flex flex-col gap-4">
-        {timers.map((timer) => (
-          <Timer
-            key={timer.id}
-            timer={timer}
-            onRemove={removeTimer}
-          />
-        ))}
+      ))}
+      <div className="cloud-msg">
+        <h2>Vercel Cloud Function Demo</h2>
+        <p>Message from cloud: {msg}</p>
       </div>
     </div>
   );
 }
 
 export default App;
-
-
 
