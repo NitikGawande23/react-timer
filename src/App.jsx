@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import Timer from './Timer';
 import TimerForm from './TimerForm';
 import './index.css';
-import './App.css';
+import './App.css'; // Assuming this is for Netlify demo styles
 
 function App() {
   const [timers, setTimers] = useState([]);
-  const [msg, setMsg] = useState("Loading...");
+  const [msg, setMsg] = useState("Loading..."); // 👈 Cloud function message
 
+  // Cloud function fetch
   useEffect(() => {
     fetch("/.netlify/functions/hello")
       .then((res) => res.json())
@@ -29,13 +30,9 @@ function App() {
   };
 
   const toggleTimer = (id) => {
-    setTimers(prev =>
-      prev.map(timer =>
-        timer.id === id
-          ? { ...timer, isRunning: !timer.isRunning }
-          : timer
-      )
-    );
+    setTimers(timers.map(timer =>
+      timer.id === id ? { ...timer, isRunning: !timer.isRunning } : timer
+    ));
   };
 
   const updateSeconds = (id, newSeconds) => {
@@ -45,27 +42,26 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <h1>Countdown Timers</h1>
+    <div className="p-4 max-w-md mx-auto">
+      <h1 className="text-xl font-bold mb-4">Countdown Timers</h1>
       <TimerForm addTimer={addTimer} />
-      <div className="timer-list">
-        {timers.map(timer => (
-          <Timer
-            key={timer.id}
-            id={timer.id}
-            name={timer.name}
-            totalSeconds={timer.totalSeconds}
-            isRunning={timer.isRunning}
-            deleteTimer={deleteTimer}
-            externalToggleTimer={toggleTimer}
-            updateSeconds={updateSeconds}
-          />
-        ))}
-      </div>
+      {timers.map(timer => (
+        <Timer
+          key={timer.id}
+          id={timer.id}
+          name={timer.name}
+          totalSeconds={timer.totalSeconds}
+          isRunning={timer.isRunning}
+          deleteTimer={deleteTimer}
+          toggleTimer={toggleTimer} // ⚠️ Class names preserved, just renamed this prop
+          updateSeconds={updateSeconds}
+        />
+      ))}
 
-      <div className="cloud-msg">
-        <h2>Vercel Cloud Function Demo</h2>
-        <p>Message from cloud: {msg}</p>
+      {/* Cloud function demo section */}
+      <div className="mt-8 border-t pt-4">
+        <h2 className="text-lg font-semibold mb-2">Vercel Cloud Function Demo</h2>
+        <p className="text-sm text-gray-600">Message from cloud: {msg}</p>
       </div>
     </div>
   );
