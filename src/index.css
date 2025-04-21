@@ -1,24 +1,28 @@
+/* Global Styles */
 body {
-  background-color: #EBE8DB;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
+  background-color: #f6f5f0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #3D0301;
 }
 
 h1 {
   text-align: center;
-  color: #B03052;
   margin-top: 30px;
-  font-size: 3rem;
+  font-size: 2.5rem;
+  color: #B03052;
 }
 
+/* Form Styles */
 form {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 20px auto;
   gap: 10px;
+  margin: 30px auto;
+  max-width: 600px;
+  flex-wrap: wrap;
 }
 
 form input {
@@ -29,10 +33,12 @@ form input {
   background-color: #fff;
   color: #3D0301;
   outline: none;
+  width: 200px;
 }
 
 form input::placeholder {
   color: #B03052;
+  opacity: 0.7;
 }
 
 form button {
@@ -50,122 +56,85 @@ form button:hover {
   background-color: #B03052;
 }
 
+/* Timer Card */
 .timer-card {
-  background-color: #fff;
-  border: 2px solid #D76C82;
-  border-radius: 12px;
-  padding: 20px;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  padding: 24px;
   margin: 20px auto;
-  max-width: 300px;
-  box-shadow: 0 8px 16px rgba(61, 3, 1, 0.15);
+  max-width: 350px;
   text-align: center;
   transition: transform 0.3s ease;
 }
 
 .timer-card:hover {
-  transform: scale(1.02);
+  transform: translateY(-4px);
 }
 
+/* Timer Display */
 .timer-time {
-  font-size: 2.2rem;
+  font-size: 2.5rem;
   font-weight: bold;
   color: #3D0301;
-  margin-bottom: 15px;
+  margin: 16px 0;
+  font-family: 'Courier New', Courier, monospace;
 }
 
+/* Buttons */
 .timer-buttons {
   display: flex;
   justify-content: center;
-  gap: 15px;
-}
-
-.timer-btn {
-  padding: 8px 16px;
-  font-weight: bold;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background 0.3s ease;
-}
-
-.start-btn {
-  background-color: #D76C82;
-  color: white;
-}
-
-.start-btn:hover {
-  background-color: #B03052;
-}
-
-.icon-btn {
-  background-color: transparent;
-  border: none;
-  font-size: 1.3rem;
-  cursor: pointer;
-  color: #3D0301;
-  transition: color 0.3s ease;
-}
-
-.icon-btn:hover {
-  color: #B03052;
-}
-
-
-.timer-container {
-  border: 2px solid #D76C82;
-  padding: 16px;
-  margin-bottom: 16px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
-  max-width: 320px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.timer-display {
-  font-size: 2rem;
-  text-align: center;
-  color: #3D0301;
-  font-weight: bold;
-}
-
-.timer-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  gap: 12px;
   margin-top: 12px;
 }
 
-.timer-toggle-btn {
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
+.timer-btn {
+  padding: 10px 18px;
+  font-size: 1rem;
+  font-weight: 600;
   border: none;
-  transition: background 0.3s ease;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.timer-toggle-btn.start {
+.timer-btn.start {
   background-color: #B5EAD7;
-  color: #007F5F;
+  color: #006a4e;
 }
 
-.timer-toggle-btn.pause {
+.timer-btn.pause {
   background-color: #FFDAC1;
   color: #D7263D;
 }
 
-.timer-delete-btn {
-  background: transparent;
-  font-size: 1.3rem;
-  border: none;
-  cursor: pointer;
-  transition: color 0.3s ease;
+.timer-btn.delete {
+  background-color: #F3A5A5;
+  color: #3D0301;
 }
 
-.timer-delete-btn:hover {
+.timer-btn:hover {
+  opacity: 0.9;
+}
+
+/* Cloud message section */
+.vercel-msg {
+  margin-top: 60px;
+  padding-top: 20px;
+  border-top: 1px solid #D76C82;
+  text-align: center;
+  color: #666;
+}
+
+.vercel-msg h2 {
+  font-size: 1.25rem;
+  margin-bottom: 8px;
   color: #B03052;
 }
+
+.vercel-msg p {
+  font-size: 0.95rem;
+}
+
 
