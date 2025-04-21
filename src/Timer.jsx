@@ -49,7 +49,7 @@ function Timer({ id, name, totalSeconds, isRunning, deleteTimer, toggleTimer, up
           name,
           startTime,
           endTime,
-          duration: secondsPassed
+          duration: totalSeconds  // original input duration saved here
         })
       })
         .then(res => res.json())
@@ -61,7 +61,7 @@ function Timer({ id, name, totalSeconds, isRunning, deleteTimer, toggleTimer, up
           console.error('❌ Failed to save session:', err);
         });
     }
-  }, [timeLeft, isRunning, secondsPassed, name, hasSaved]);
+  }, [timeLeft, isRunning, secondsPassed, name, hasSaved, totalSeconds]);
 
   return (
     <div className="timer-container mb-4 p-3 border rounded">
@@ -86,3 +86,4 @@ function Timer({ id, name, totalSeconds, isRunning, deleteTimer, toggleTimer, up
 }
 
 export default Timer;
+
