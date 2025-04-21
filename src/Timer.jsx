@@ -28,6 +28,33 @@ function Timer({ id, name, totalSeconds, isRunning, deleteTimer, toggleTimer, up
     return () => clearInterval(interval);
   }, [isRunning, timeLeft]);
 
+  useEffect(() => {
+    if (timeLeft === 0 && isRunning) {
+      const endTime = new Date();
+      const startTime = new Date(endTime.getTime() - totalSeconds * 1000);
+
+      fetch('/api/saveSession', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name,
+          startTime,
+          endTime,
+          duration: totalSeconds
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log('Session saved:', data);
+        })
+        .catch(err => {
+          console.error('Failed to save session:', err);
+        });
+    }
+  }, [timeLeft]);
+
   return (
     <div className="timer-container mb-4 p-3 border rounded">
       <h3 className="font-semibold mb-1">{name}</h3>
@@ -51,4 +78,5 @@ function Timer({ id, name, totalSeconds, isRunning, deleteTimer, toggleTimer, up
 }
 
 export default Timer;
+
 
