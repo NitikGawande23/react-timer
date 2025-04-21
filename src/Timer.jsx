@@ -1,90 +1,54 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 
-function Timer({ id, name, totalSeconds, isRunning, deleteTimer, externalToggleTimer, updateSeconds }) {
-  const [timeLeft, setTimeLeft] = useState(totalSeconds);
-  const [startTime, setStartTime] = useState(null);
-  const [hasStarted, setHasStarted] = useState(false);
+const Timer = ({ id, name, initialSeconds, onDelete }) => {
+  const [secondsLeft, setSecondsLeft] = useState(initialSeconds);
+  const [isRunning, setIsRunning] = useState(false);
+  const intervalRef = useRef(null);
 
-  useEffect(() => {
-    let interval = null;
-
-    if (isRunning && timeLeft > 0) {
-      interval = setInterval(() => {
-        setTimeLeft((prevTime) => {
-          const newTime = prevTime - 1;
-          updateSeconds(id, newTime);
-          return newTime;
+  const toggleTimer = () => {
+    if (isRunning) {
+      clearInterval(intervalRef.current);
+    } else {
+      intervalRef.current = setInterval(() => {
+        setSecondsLeft((prev) => {
+          if (prev <= 1) {
+            clearInterval(intervalRef.current);
+            return 0;
+          }
+          return prev - 1;
         });
       }, 1000);
-    } else {
-      clearInterval(interval);
     }
-
-    return () => clearInterval(interval);
-  }, [isRunning, timeLeft]);
-
-  useEffect(() => {
-    if (timeLeft === 0 && isRunning) {
-      const endTime = new Date();
-      const duration = Math.floor((endTime - startTime) / 1000);
-
-      const payload = {
-        taskName: name,
-        startTime,
-        endTime,
-        duration,
-      };
-
-      fetch('/api/saveSession', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      })
-        .then((res) => res.json())
-        .then((data) => console.log('Session saved:', data))
-        .catch((err) => console.error('Error saving session:', err));
-    }
-  }, [timeLeft, isRunning, startTime, name]);
-
-  const formatTime = (seconds) => {
-    const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
-    const secs = String(seconds % 60).padStart(2, '0');
-    return `${mins}:${secs}`;
+    setIsRunning(!isRunning);
   };
 
-  const handleToggle = () => {
-    if (!hasStarted) {
-      setStartTime(new Date());
-      setHasStarted(true);
-    }
-    externalToggleTimer(id);
+  useEffect(() => {
+    return () => clearInterval(intervalRef.current);
+  }, []);
+
+  const formatTime = (s) => {
+    const h = String(Math.floor(s / 3600)).padStart(2, "0");
+    const m = String(Math.floor((s % 3600) / 60)).padStart(2, "0");
+    const sec = String(s % 60).padStart(2, "0");
+    return `${h}:${m}:${sec}`;
   };
 
   return (
-    <div className="bg-white shadow-md p-4 rounded-md mb-4">
-      <h2 className="text-xl font-semibold mb-2">{name}</h2>
-      <p className="text-2xl font-mono mb-4">{formatTime(timeLeft)}</p>
-      <div className="flex space-x-2">
-        <button
-          onClick={handleToggle}
-          className={`px-3 py-1 rounded text-white ${isRunning ? 'bg-yellow-500' : 'bg-green-500'}`}
-        >
-          {isRunning ? 'Pause' : 'Start'}
+    <div className="timer-card">
+      <h2>{name}</h2>
+      <div className="timer-time">{formatTime(secondsLeft)}</div>
+      <div className="timer-buttons">
+        <button className="timer-btn" onClick={toggleTimer}>
+          {isRunning ? "Pause" : "Start"}
         </button>
-        <button
-          onClick={() => deleteTimer(id)}
-          className="px-3 py-1 rounded bg-red-500 text-white"
-        >
-          Delete
-        </button>
+        <span className="trash-icon" onClick={() => onDelete(id)}>🗑️</span>
       </div>
     </div>
   );
-}
+};
 
 export default Timer;
+
 
 
 
